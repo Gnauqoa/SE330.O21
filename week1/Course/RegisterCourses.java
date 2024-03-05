@@ -201,34 +201,20 @@ public class RegisterCourses {
 
     System.out.println("Auto index for id of students and courses");
 
-    // System.out.print("Enter the number of students: ");
-    // int numStudents = scanner.nextInt();
+    System.out.print("Enter the number of students: ");
+    int numStudents = scanner.nextInt();
 
-    // System.out.print("Enter the number of courses: ");
-    // int numCourses = scanner.nextInt();
+    System.out.print("Enter the number of courses: ");
+    int numCourses = scanner.nextInt();
 
     // Input student information
     ArrayList<Student> students = new ArrayList<>();
-    students.add(new Student(1, "Nguyen Van A"));
-    // for (int i = 0; i < numStudents; i++) Student.inputList(students);
+    for (int i = 0; i < numStudents; i++) Student.inputList(students);
 
     // Input course information
     ArrayList<Course> courses = new ArrayList<>();
-    courses.add(new Course(1, "Math", 3, 7, 9, 2));
-    courses.add(new Course(2, "English", 4, 10, 12, 4));
-    courses.add(new Course(3, "Science", 3, 13, 15, 6));
-    courses.add(new Course(4, "History", 3, 9, 11, 3));
-    courses.add(new Course(5, "Physics", 4, 14, 16, 5));
-    courses.add(new Course(6, "Computer Science", 3, 9, 11, 2));
-    courses.add(new Course(7, "Art", 2, 13, 15, 4));
-    courses.add(new Course(8, "Music", 2, 10, 12, 6));
-    courses.add(new Course(9, "Chemistry", 4, 8, 10, 3));
-    courses.add(new Course(10, "Physical Education", 1, 15, 16, 2));
-    courses.add(new Course(11, "Biology", 3, 11, 13, 5));
-    courses.add(new Course(12, "Literature", 3, 14, 16, 3));
-    courses.add(new Course(13, "Geography", 2, 9, 11, 6));
-    courses.add(new Course(14, "Economics", 3, 13, 15, 4));
-    // for (int i = 0; i < numCourses; i++) Course.inputList(courses);
+
+    for (int i = 0; i < numCourses; i++) Course.inputList(courses);
 
     int command = 0;
     while (command != 7) {
