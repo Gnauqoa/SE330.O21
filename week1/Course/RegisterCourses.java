@@ -18,9 +18,19 @@ class Student {
     courseIds = new ArrayList<Integer>(); // Initialize the ArrayList
   }
 
-  public void registerCourse(Course course) { // Add return type "void"
+  public boolean registerCourse(Course course) {
+    if (this.creditHours + course.creditHours > 24) {
+      System.out.println("Số lượng tín chỉ tối đa là 24");
+      return false;
+    }
     this.courseIds.add(course.courseId);
     this.creditHours += course.creditHours;
+    System.out.println(
+      "Course registered successfully, " +
+      "current credit hours: " +
+      this.creditHours
+    );
+    return true;
   }
 
   public void print() {
@@ -52,6 +62,18 @@ class Student {
       "Credit Hours"
     );
     for (Student student : students) student.print();
+  }
+
+  public static Student findStudent(
+    ArrayList<Student> students,
+    int studentID
+  ) {
+    for (Student student : students) {
+      if (student.studentID == studentID) {
+        return student;
+      }
+    }
+    return null;
   }
 }
 
@@ -87,8 +109,7 @@ class Course {
   }
 
   public void studentRegister(Student student) {
-    studentIDs.add((student.studentID)); // Convert int to String
-    student.registerCourse(this);
+    if (student.registerCourse(this)) studentIDs.add((student.studentID));
   }
 
   public void print() {
@@ -131,6 +152,14 @@ class Course {
     );
     for (Course course : courses) course.print();
   }
+
+  public static Course findCourse(ArrayList<Course> courses, int courseId) {
+    for (Course course : courses) if (
+      course.courseId == courseId
+    ) return course;
+
+    return null;
+  }
 }
 
 public class RegisterCourses {
@@ -154,6 +183,19 @@ public class RegisterCourses {
     // Input course information
     ArrayList<Course> courses = new ArrayList<>();
     courses.add(new Course(1, "Math", 3, 7, 9, "Monday"));
+    courses.add(new Course(2, "English", 4, 10, 12, "Wednesday"));
+    courses.add(new Course(3, "Science", 3, 13, 15, "Friday"));
+    courses.add(new Course(4, "History", 3, 9, 11, "Tuesday"));
+    courses.add(new Course(5, "Physics", 4, 14, 16, "Thursday"));
+    courses.add(new Course(6, "Computer Science", 3, 9, 11, "Monday"));
+    courses.add(new Course(7, "Art", 2, 13, 15, "Wednesday"));
+    courses.add(new Course(8, "Music", 2, 10, 12, "Friday"));
+    courses.add(new Course(9, "Chemistry", 4, 8, 10, "Tuesday"));
+    courses.add(new Course(10, "Physical Education", 1, 15, 16, "Monday"));
+    courses.add(new Course(11, "Biology", 3, 11, 13, "Thursday"));
+    courses.add(new Course(12, "Literature", 3, 14, 16, "Tuesday"));
+    courses.add(new Course(13, "Geography", 2, 9, 11, "Friday"));
+    courses.add(new Course(14, "Economics", 3, 13, 15, "Wednesday"));
     // for (int i = 0; i < numCourses; i++) Course.inputList(courses);
 
     int command = 0;
@@ -164,7 +206,7 @@ public class RegisterCourses {
       System.out.println("1. List all students");
       System.out.println("2. List all courses");
       System.out.println(
-        "3. Register a course for a student (Phải đăng ký cho đến khi số tín chỉ >= 14)"
+        "3. Register a course for a student (-1 để thoát) (Phải đăng ký cho đến khi số tín chỉ >= 14)"
       );
       System.out.println("6. Exit");
       System.out.println(
@@ -181,39 +223,37 @@ public class RegisterCourses {
         case 3:
           // register course for student
           System.out.print("Enter student ID: ");
-          int studentID = scanner.nextInt();
+          int input = scanner.nextInt();
 
-          int index = -1;
-          for (int i = 0; i < students.size(); i++) {
-            if (students.get(i).studentID == studentID) { // Change from students.get(i).studentID.equals(Integer.toString(studentID)) to students.get(i).studentID == studentID
-              index = i;
-              break;
-            }
-          }
-          if (index == -1) {
+          Student student = Student.findStudent(students, input);
+          while (student == null) {
             System.out.println("Invalid student ID");
-            continue;
+            System.out.print("Enter student ID: ");
+            input = scanner.nextInt();
+            if (input == -1) break;
+            student = Student.findStudent(students, input);
           }
 
-          // while (students.get(index).creditHours <= 14) {
-          System.out.print("Enter course ID: ");
-          int courseID = scanner.nextInt();
+          while (true) {
+            System.out.print("Enter course ID: ");
+            input = scanner.nextInt();
 
-          Course selectedCourse = null;
-          for (Course course : courses) {
-            if (course.courseId == courseID) { // Change from course.courseId.equals(Integer.toString(courseID)) to course.courseId == courseID
-              selectedCourse = course;
-              break;
+            if (input == -1) if (student.creditHours >= 14) break; else {
+              System.out.println("Chưa đăng ký đủ số tín chỉ");
+              continue;
             }
-          }
-          if (selectedCourse == null) {
-            System.out.println("Invalid course ID");
-            continue;
-          }
-          selectedCourse.studentRegister(students.get(index));
 
-          System.out.println("Course registered successfully");
-
+            Course course = Course.findCourse(courses, input);
+            while (course == null) {
+              System.out.println("Invalid course ID");
+              System.out.print("Enter course ID: ");
+              input = scanner.nextInt();
+              if (input == -1) break;
+              course = Course.findCourse(courses, input);
+            }
+            if (course != null) course.studentRegister(student);
+            if (student.creditHours >= 24) break;
+          }
           break;
         case 6:
           System.out.println("Exiting...");
