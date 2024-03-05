@@ -358,7 +358,10 @@ public class RegisterCourses {
       System.out.println(
         "3. Register a course for a student (-1 để thoát) (Phải đăng ký cho đến khi số tín chỉ >= 14)"
       );
-      System.out.println("6. Exit");
+      System.out.println("4. Most registered course");
+      System.out.println("5. Most registered student");
+      System.out.println("6. Time table of a student");
+      System.out.println("7. Exit");
       System.out.println(
         "----------------------------------------------------"
       );
