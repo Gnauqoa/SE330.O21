@@ -23,6 +23,10 @@ class Student {
       System.out.println("Số lượng tín chỉ tối đa là 24");
       return false;
     }
+    if (this.courseIds.contains(course.courseId)) {
+      System.out.println("Course already registered");
+      return false;
+    }
     this.courseIds.add(course.courseId);
     this.creditHours += course.creditHours;
     System.out.println(
