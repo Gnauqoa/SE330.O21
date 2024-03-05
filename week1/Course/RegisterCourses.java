@@ -57,7 +57,7 @@ class Student {
     scanner.close();
   }
 
-  public static void printStudents(ArrayList<Student> students) {
+  public static void printField() {
     System.out.printf(
       "| %-15s | %-10s | %-20s | %-13s |\n",
       "Full Name",
@@ -65,6 +65,10 @@ class Student {
       "Course IDs",
       "Credit Hours"
     );
+  }
+
+  public static void printStudents(ArrayList<Student> students) {
+    printField();
     for (Student student : students) student.print();
   }
 
@@ -78,6 +82,14 @@ class Student {
       }
     }
     return null;
+  }
+
+  public static Student registeringMostCourse(ArrayList<Student> students) {
+    Student student = students.get(0);
+    for (Student s : students) if (
+      s.courseIds.size() > student.courseIds.size()
+    ) student = s;
+    return student;
   }
 }
 
@@ -145,7 +157,7 @@ class Course {
     scanner.close();
   }
 
-  public static void printCoursesField() {
+  public static void printField() {
     System.out.printf(
       "| %-10s | %-20s | %-13s | %-10s | %-8s |\n",
       "Course ID",
@@ -157,7 +169,7 @@ class Course {
   }
 
   public static void printCourses(ArrayList<Course> courses) {
-    printCoursesField();
+    printField();
     for (Course course : courses) course.print();
   }
 
@@ -274,12 +286,27 @@ public class RegisterCourses {
         case 4:
           Course mostRegisteredCourse = Course.mostRegisteredCourse(courses);
 
-          Course.printCoursesField();
+          Course.printField();
           mostRegisteredCourse.print();
 
           System.out.println("Students registered for this course:");
+          Student.printField();
           for (int studentID : mostRegisteredCourse.studentIDs) {
             Student.findStudent(students, studentID).print();
+          }
+          break;
+        case 5:
+          Student mostRegisteredStudent = Student.registeringMostCourse(
+            students
+          );
+
+          Student.printField();
+          mostRegisteredStudent.print();
+
+          System.out.println("Courses registered for this student:");
+          Course.printField();
+          for (int courseId : mostRegisteredStudent.courseIds) {
+            Course.findCourse(courses, courseId).print();
           }
           break;
         case 6:
