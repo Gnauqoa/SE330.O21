@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 class Student {
@@ -100,7 +102,7 @@ class Course {
   int creditHours;
   int startTime;
   int endTime;
-  String dayOfWeek;
+  int dayOfWeek;
   ArrayList<Integer> studentIDs;
 
   public Course() {
@@ -113,7 +115,7 @@ class Course {
     int creditHours,
     int startTime,
     int endTime,
-    String dayOfWeek
+    int dayOfWeek
   ) {
     this.courseId = courseId;
     this.courseName = courseName;
@@ -130,10 +132,11 @@ class Course {
 
   public void print() {
     System.out.printf(
-      "| %-10s | %-20s | %-13s | %-10s | %-8s |\n",
+      "| %-10s | %-20s | %-13s | %-15s | %-10s | %-8s |\n",
       this.courseId,
       this.courseName,
       this.creditHours,
+      this.dayOfWeek,
       this.startTime,
       this.endTime
     );
@@ -151,7 +154,7 @@ class Course {
     System.out.print("Enter end time: ");
     course.endTime = scanner.nextInt();
     System.out.print("Enter day of week: ");
-    course.dayOfWeek = scanner.nextLine();
+    course.dayOfWeek = scanner.nextInt();
     course.courseId = courses.size() + 1;
     courses.add(course);
     scanner.close();
@@ -159,10 +162,11 @@ class Course {
 
   public static void printField() {
     System.out.printf(
-      "| %-10s | %-20s | %-13s | %-10s | %-8s |\n",
+      "| %-10s | %-20s | %-13s | %-15s | %-10s | %-8s |\n",
       "Course ID",
       "Course Name",
       "Credit Hours",
+      "Day of Week",
       "Start Time",
       "End Time"
     );
@@ -210,24 +214,24 @@ public class RegisterCourses {
 
     // Input course information
     ArrayList<Course> courses = new ArrayList<>();
-    courses.add(new Course(1, "Math", 3, 7, 9, "Monday"));
-    courses.add(new Course(2, "English", 4, 10, 12, "Wednesday"));
-    courses.add(new Course(3, "Science", 3, 13, 15, "Friday"));
-    courses.add(new Course(4, "History", 3, 9, 11, "Tuesday"));
-    courses.add(new Course(5, "Physics", 4, 14, 16, "Thursday"));
-    courses.add(new Course(6, "Computer Science", 3, 9, 11, "Monday"));
-    courses.add(new Course(7, "Art", 2, 13, 15, "Wednesday"));
-    courses.add(new Course(8, "Music", 2, 10, 12, "Friday"));
-    courses.add(new Course(9, "Chemistry", 4, 8, 10, "Tuesday"));
-    courses.add(new Course(10, "Physical Education", 1, 15, 16, "Monday"));
-    courses.add(new Course(11, "Biology", 3, 11, 13, "Thursday"));
-    courses.add(new Course(12, "Literature", 3, 14, 16, "Tuesday"));
-    courses.add(new Course(13, "Geography", 2, 9, 11, "Friday"));
-    courses.add(new Course(14, "Economics", 3, 13, 15, "Wednesday"));
+    courses.add(new Course(1, "Math", 3, 7, 9, 2));
+    courses.add(new Course(2, "English", 4, 10, 12, 4));
+    courses.add(new Course(3, "Science", 3, 13, 15, 6));
+    courses.add(new Course(4, "History", 3, 9, 11, 3));
+    courses.add(new Course(5, "Physics", 4, 14, 16, 5));
+    courses.add(new Course(6, "Computer Science", 3, 9, 11, 2));
+    courses.add(new Course(7, "Art", 2, 13, 15, 4));
+    courses.add(new Course(8, "Music", 2, 10, 12, 6));
+    courses.add(new Course(9, "Chemistry", 4, 8, 10, 3));
+    courses.add(new Course(10, "Physical Education", 1, 15, 16, 2));
+    courses.add(new Course(11, "Biology", 3, 11, 13, 5));
+    courses.add(new Course(12, "Literature", 3, 14, 16, 3));
+    courses.add(new Course(13, "Geography", 2, 9, 11, 6));
+    courses.add(new Course(14, "Economics", 3, 13, 15, 4));
     // for (int i = 0; i < numCourses; i++) Course.inputList(courses);
 
     int command = 0;
-    while (command != 6) {
+    while (command != 7) {
       System.out.println(
         "------------------------Menu------------------------"
       );
@@ -310,7 +314,38 @@ public class RegisterCourses {
           }
           break;
         case 6:
-          System.out.println("Exiting...");
+          System.out.print("Enter student ID: ");
+          input = scanner.nextInt();
+
+          Student st = Student.findStudent(students, input);
+          while (st == null) {
+            System.out.println("Invalid student ID");
+            System.out.print("Enter student ID: ");
+            input = scanner.nextInt();
+            if (input == -1) break;
+            student = Student.findStudent(students, input);
+          }
+          ArrayList<Course> coursesRegistered = new ArrayList<Course>();
+          for (int courseId : st.courseIds) {
+            coursesRegistered.add(Course.findCourse(courses, courseId));
+          }
+
+          // Sort coursesRegistered by dayOfWeek and startTime
+          Collections.sort(
+            coursesRegistered,
+            new Comparator<Course>() {
+              @Override
+              public int compare(Course c1, Course c2) {
+                if (Integer.valueOf(c1.dayOfWeek).equals(c2.dayOfWeek)) {
+                  return Integer.compare(c1.startTime, c2.startTime);
+                } else {
+                  return Integer.valueOf(c1.dayOfWeek).compareTo(c2.dayOfWeek);
+                }
+              }
+            }
+          );
+
+          Course.printCourses(coursesRegistered);
           break;
         default:
           break;
