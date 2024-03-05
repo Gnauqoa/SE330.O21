@@ -145,7 +145,7 @@ class Course {
     scanner.close();
   }
 
-  public static void printCourses(ArrayList<Course> courses) {
+  public static void printCoursesField() {
     System.out.printf(
       "| %-10s | %-20s | %-13s | %-10s | %-8s |\n",
       "Course ID",
@@ -154,6 +154,10 @@ class Course {
       "Start Time",
       "End Time"
     );
+  }
+
+  public static void printCourses(ArrayList<Course> courses) {
+    printCoursesField();
     for (Course course : courses) course.print();
   }
 
@@ -163,6 +167,14 @@ class Course {
     ) return course;
 
     return null;
+  }
+
+  public static Course mostRegisteredCourse(ArrayList<Course> courses) {
+    Course mostRegisteredCourse = courses.get(0);
+    for (Course course : courses) if (
+      course.studentIDs.size() > mostRegisteredCourse.studentIDs.size()
+    ) mostRegisteredCourse = course;
+    return mostRegisteredCourse;
   }
 }
 
@@ -259,12 +271,35 @@ public class RegisterCourses {
             if (student.creditHours >= 24) break;
           }
           break;
+        case 4:
+          Course mostRegisteredCourse = Course.mostRegisteredCourse(courses);
+
+          Course.printCoursesField();
+          mostRegisteredCourse.print();
+
+          System.out.println("Students registered for this course:");
+          for (int studentID : mostRegisteredCourse.studentIDs) {
+            Student.findStudent(students, studentID).print();
+          }
+          break;
         case 6:
           System.out.println("Exiting...");
           break;
         default:
           break;
       }
+      System.out.println(
+        "------------------------Menu------------------------"
+      );
+      System.out.println("1. List all students");
+      System.out.println("2. List all courses");
+      System.out.println(
+        "3. Register a course for a student (-1 để thoát) (Phải đăng ký cho đến khi số tín chỉ >= 14)"
+      );
+      System.out.println("6. Exit");
+      System.out.println(
+        "----------------------------------------------------"
+      );
       command = scanner.nextInt();
     }
 
